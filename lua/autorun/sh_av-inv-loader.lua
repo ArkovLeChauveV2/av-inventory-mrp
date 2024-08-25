@@ -12,9 +12,23 @@ if SERVER then
 
     AddCSLuaFile("av-inv-mrp/sh_config.lua")
 
+    Arkonfig.Inventory.Classes = {}
+    AddCSLuaFile("av-inv-mrp/enums/categories.lua")
+    AddCSLuaFile("av-inv-mrp/classes/item.lua")
+    AddCSLuaFile("av-inv-mrp/sh_items-loader.lua")
+
     include("av-inv-mrp/sh_config.lua")
+    include("av-inv-mrp/enums/categories.lua")
+    include("av-inv-mrp/classes/item.lua")
+    include("av-inv-mrp/sh_items-loader.lua")
+
     include("av-inv-mrp/sv_data.lua")
-    include("av-inv-mrp/sv_hooks.lua")
+    include("av-inv-mrp/sv_meta.lua")
 else
     include("av-inv-mrp/sh_config.lua")
+    
+    Arkonfig.Inventory.Classes = {}
+    include("av-inv-mrp/enums/categories.lua")
+    include("av-inv-mrp/classes/item.lua")
+    include("av-inv-mrp/sh_items-loader.lua")
 end

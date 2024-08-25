@@ -1,3 +1,4 @@
+// Do you want to link the addons to a database ?
 // You need a database for that
 Arkonfig.Inventory.UseMySQLoo = true
 
