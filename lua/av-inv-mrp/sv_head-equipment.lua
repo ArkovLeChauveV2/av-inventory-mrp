@@ -53,7 +53,31 @@ function Player:unequipHeadItem()
     local nEquippedHeadId = self:getEquippedHead()
     if !nEquippedHeadId then return end
 
-    SafeRemoveEntity(self.eHeadAcc)
+    local tItem = Arkonfig.Inventory:getItemById(tItemData.id)
+    if !tItem then return end
+
+    if tItem.onEquip then tItem.onUnequip(self) end
+
+    self:destroyHeadItem()
     self:addToInventory(nEquippedHeadId, 1)
+end
+
+/*
+    Player:destroyHeadItem()
+
+    Destroys the equiped head item.
+
+    @return Boolean - Is the item destroyed ?
+*/
+function Player:destroyHeadItem()
+    local nEquippedHeadId = self:getEquippedHead()
+    if !nEquippedHeadId then return false end
+
+    local tItem = Arkonfig.Inventory:getItemById(tItemData.id)
+    if !tItem then return false end
+
+    SafeRemoveEntity(self.eHeadAcc)
     self.equippedHead = nil
+
+    return true
 end

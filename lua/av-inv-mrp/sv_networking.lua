@@ -1,5 +1,6 @@
 util.AddNetworkString("AVInv:DropItem")
 util.AddNetworkString("AVInv:ToggleEquipHeadItem")
+util.AddNetworkString("AVInv:OpenInv")
 
 net.Receive("AVInv:DropItem", function(_, pPly)
     local nSlotId = net.ReadUInt(16)

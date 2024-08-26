@@ -6,7 +6,7 @@ Arkonfig.Inventory.UseMySQLoo = true
 Arkonfig.Inventory.OpenInv = KEY_P
 
 // Key to pickup an item
-Arkonfig.Inventory.GatherItem = KEY_M
+Arkonfig.Inventory.PickupItem = KEY_M
 
 // Max size for a player's inventory
 Arkonfig.Inventory.MaxInventorySize = 25

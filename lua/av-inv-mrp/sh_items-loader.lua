@@ -78,7 +78,7 @@ end
 
     @param Player pOwner - The owner of the spawned item.
 
-    @return Entity eEnt - The spawned item
+    @return Entity - The spawned item
 */
 function Arkonfig.Inventory:spawnItem(tItem, vPos, aAng, pOwner)
     local eEnt = ents.Create(tItem.class)

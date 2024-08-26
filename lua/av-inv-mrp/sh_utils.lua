@@ -6,25 +6,25 @@
 */
 
 /*
-    net.WriteItem(tItem)
+    net.WriteItemData(tItem)
 
     Prepare an item to be networked.
 
     @param itemData tItem - The item to network.
 */
-function net.WriteItem(tItem)
+function net.WriteItemData(tItem)
     net.WriteUInt(tItem.id, 16)
     net.WriteUInt(tItem.amount, 16)
 end
 
 /*
-    net.ReadItem()
+    net.ReadItemData()
 
     Reads a networked item.
 
-    @return itemData tItem - The networked item
+    @return itemData - The networked item
 */
-function net.ReadItem()
+function net.ReadItemData()
     local tItem = {}
     tItem.id = net.ReadUInt(16)
     tItem.amount = net.ReadUInt(16)
@@ -33,13 +33,13 @@ function net.ReadItem()
 end
 
 /*
-    net.WriteItems(tItemsList)
+    net.WriteItemsData(tItemsList)
 
     Prepare a list of items to be networked.
 
     @param List<itemData> tItemsList - The networked items list.
 */
-function net.WriteItems(tItemsList)
+function net.WriteItemsData(tItemsList)
     local nItemsCount = table.Count(tItemsList)
 
     net.WriteUInt(nItemsCount, 16)
@@ -50,13 +50,13 @@ function net.WriteItems(tItemsList)
 end
 
 /*
-    net.ReadItems()
+    net.ReadItemsData()
 
     Reads a list of networked items.
 
-    @return List<itemData> tItemsList - The networked items list
+    @return List<itemData> - The networked items list
 */
-function net.ReadItems()
+function net.ReadItemsData()
     local tItemsList = {}
     local nItemsCount = net.ReadUInt(16)
 

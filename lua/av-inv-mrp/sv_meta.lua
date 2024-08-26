@@ -1,3 +1,10 @@
+/*
+    itemData = {
+        id: Number - the identifier of the possessed item
+        amount: Number - the amount of the possessed item
+    }
+*/
+
 local Player = FindMetaTable("Player")
 
 /*
@@ -5,7 +12,7 @@ local Player = FindMetaTable("Player")
 
     Gets the inv of the player.
 
-    @return List<Item> - The player's inventory.
+    @return List<itemData> - The player's inventory.
 */
 function Player:getInventory()
     self.tInv = self.tInv || {}
@@ -17,7 +24,7 @@ end
 
     Gets the item's inventory of a player by slot
 
-    @return Item - The player's item linked to the given slot.
+    @return itemData - The player's item linked to the given slot.
     nil if no item found.
 */
 function Player:getItemBySlot(nSlot)
