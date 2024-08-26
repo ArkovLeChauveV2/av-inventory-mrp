@@ -66,6 +66,34 @@ function Arkonfig.Inventory:getItemIdByClass(sClass)
 end
 
 /*
+    Arkonfig.Inventory:damageItem(eItem)
+
+    Damage an item that is in the world.
+
+    @param Entity eItem - The item to damage.
+    @param Player pOwner - (only needed if the item is a swep) The owner of the swep.
+*/
+function Arkonfig.Inventory:damageItem(eItem, pOwner)
+    if !IsValid(eItem) || !eItem.durability || eItem.durability == -1 then return end
+    if eItem:IsWeapon() && !IsValid(pOwner) then return end
+    
+    local tItem = self:getItemByClass(eItem:GetClass())
+    if !tItem then return end
+
+    eItem.durability = eItem.durability - 1
+    if eItem.durability > 0 then return end
+
+    DarkRP.notify(self, NOTIFY_GENERIC, 3, Arkonfig.Inventory:getLang("itemBroke", tItem.name))
+
+    if eItem:IsWeapon() then
+        pOwner:StripWeapon(eItem:GetClass())
+        return
+    end
+
+    eItem:Remove()
+end
+
+/*
     Arkonfig.Inventory:spawnItem(tItem, vPos, aAng, pOwner, nDurability)
 
     Spawns an item by its identifier.

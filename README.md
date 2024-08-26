@@ -39,3 +39,19 @@ When your language is ready, update the config
 ```lua
 Arkonfig.Inventory.SelectedLanguage = "put your country code here"
 ```
+
+## Manually manage durability of item
+- If the item is in the world (on the player's head, or sweps) use that function:
+```lua
+Arkonfig.Inventory:damageItem(eItem, pOwner)
+```
+Works with sweps and entities.
+If the durability reaches 0, the item will be removed.
+If the durability is equal to -1 (no durability on item) nothing happens.
+
+- If the item is in the player's inventory use that function:
+```lua
+Player:damageItem(nSlot, nDamage)
+```
+Be careful, if there is more than one item on the given slot, the damaged item will change slot.
+If there is not enough space in the inventory, the item will get back on the ground.

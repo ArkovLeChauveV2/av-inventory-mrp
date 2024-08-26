@@ -25,6 +25,8 @@ end
 
     Gets the item's inventory of a player by slot
 
+    @param Number nSlot - The slot to get the item.
+
     @return itemData - The player's item linked to the given slot.
     nil if no item found.
 */
@@ -81,23 +83,26 @@ function Player:getSlotForItem(nId, nDurability)
 end
 
 /*
-    Player:addToInventory(nId, nAmount, nDurability)
+    Player:addToInventory(nId, nAmount, nDurability, bShouldNotif)
 
     Add an item to the player's inv
 
     @param Number nId - The identifier of the item.
-    @param Number nAmount - How much items do you wanna add ?.
+    @param Number nAmount - The amount of that item to add in the inventory.
     @param Number nDurability - The durability of the item (-1 if no durability).
+    @param Boolean bShouldNotif - Should a notif be sent ?
 
     @return Number - The remaining amount that cannot be stored
 */
-function Player:addToInventory(nId, nAmount, nDurability)
+function Player:addToInventory(nId, nAmount, nDurability, bShouldNotif)
+    bShouldNotif = bShouldNotif == nil && true || bShouldNotif
+
     local tItem = Arkonfig.Inventory:getItemById(nId)
     if !tItem then return nAmount end
 
     local bAllItemsStocked = false
     
-    DarkRP.notify(self, NOTIFY_GENERIC, 3, Arkonfig.Inventory:getLang("gettingItem", tItem.name, nAmount))
+    if bShouldNotif then DarkRP.notify(self, NOTIFY_GENERIC, 3, Arkonfig.Inventory:getLang("gettingItem", tItem.name, nAmount)) end
 
     while !bAllItemsStocked do
         local nSlot = self:getSlotForItem(nId, nDurability)
@@ -131,7 +136,7 @@ function Player:pickupItem(eEnt)
 end
 
 /*
-    Player:dropItem(nSlot)
+    Player:dropItem(nSlot, nAmount)
 
     Drops an item to the ground.
 
@@ -159,4 +164,43 @@ function Player:dropItem(nSlot, nAmount)
 
         DarkRP.placeEntity(eEnt, tr, ply)
     end
+end
+
+/*
+    Player:damageItem(nSlot, nDamage)
+
+    Damage an item from the inventory
+
+    @param Number nSlot - The item's slot to damage.
+    @param Number nDamage - The amount of durability to remove.
+*/
+function Player:damageItem(nSlot, nDamage)
+    local tSaveItem = self:getItemBySlot(nSlot)
+    if !tSaveItem then return end
+
+    local tItem = Arkonfig.Inventory:getItemById(tSaveItem.id)
+    if !tItem then continue end
+
+    self:removeToSlot(nSlot, 1)
+
+    tSaveItem.durability = tSaveItem.durability - nDamage
+
+    if tSaveItem.durability <= 0 then
+        DarkRP.notify(self, NOTIFY_GENERIC, 3, Arkonfig.Inventory:getLang("itemBroke", tItem.name))
+        return
+    end
+
+    local nRemainingItems = self:addToInventory(tSaveItem.id, 1, tSaveItem.durability, false)
+    if nRemainingItems == 0 then return end
+
+    DarkRP.notify(self, NOTIFY_GENERIC, 3, Arkonfig.Inventory:getLang("notEnoughSpace"))
+
+    local trace = {}
+    trace.start = self:EyePos()
+    trace.endpos = trace.start + self:GetAimVector() * 85
+    trace.filter = self
+
+    local tr = util.TraceLine(trace)
+    local eEnt = Arkonfig.Inventory:spawnItem(tItem, tr.HitPos, angle_zero, self, tSaveItem.durability)
+    DarkRP.placeEntity(eEnt, tr, self)
 end

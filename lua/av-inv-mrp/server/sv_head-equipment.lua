@@ -5,11 +5,23 @@ local Player = FindMetaTable("Player")
 
     Gets the equipped head item of the player.
 
-    @return Item - The player's equipped head accessory.
+    @return Number - The player's equipped head accessory's id.
     nil if no item equipped.
 */
 function Player:getEquippedHead()
     return self.equippedHead
+end
+
+/*
+    Player:getEquippedHeadEntity()
+
+    Gets the equipped head item entity of the player.
+
+    @return Number - The player's equipped head accessory's entity
+    nil if no item equipped.
+*/
+function Player:getEquippedHeadEntity()
+    return self.eHeadAcc
 end
 
 /*
@@ -64,33 +76,20 @@ function Player:unequipHeadItem()
 
     local nDurability = IsValid(self.eHeadAcc) && self.eHeadAcc.durability || -1
 
-    local bDestroySucceed = self:destroyHeadItem()
-    if !bDestroySucceed then return end
+    SafeRemoveEntity(self.eHeadAcc)
+    self.equippedHead = nil
 
     local nRemainingItems = self:addToInventory(nEquippedHeadId, 1, nDurability)
     if nRemainingItems == 0 then return end
 
     DarkRP.notify(self, NOTIFY_GENERIC, 3, Arkonfig.Inventory:getLang("notEnoughSpace"))
-end
 
-/*
-    Player:destroyHeadItem()
+    local trace = {}
+    trace.start = self:EyePos()
+    trace.endpos = trace.start + self:GetAimVector() * 85
+    trace.filter = self
 
-    Destroys the equiped head item.
-
-    @return Boolean - Is the item destroyed ?
-*/
-function Player:destroyHeadItem()
-    local nEquippedHeadId = self:getEquippedHead()
-    if !nEquippedHeadId then return false end
-
-    local tItem = Arkonfig.Inventory:getItemById(tItemData.id)
-    if !tItem then return false end
-
-    SafeRemoveEntity(self.eHeadAcc)
-    self.equippedHead = nil
-    
-    DarkRP.notify(self, NOTIFY_GENERIC, 3, Arkonfig.Inventory:getLang("itemBroke", tItem.name))
-
-    return true
+    local tr = util.TraceLine(trace)
+    local eEnt = Arkonfig.Inventory:spawnItem(tItem, tr.HitPos, angle_zero, self, nDurability)
+    DarkRP.placeEntity(eEnt, tr, self)
 end

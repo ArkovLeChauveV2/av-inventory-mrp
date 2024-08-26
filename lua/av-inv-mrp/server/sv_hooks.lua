@@ -22,3 +22,12 @@ hook.Add("PlayerButtonDown", "AVInv:OpenInv", function(pPly, nKey)
         net.WriteItemsData(pPly:getInventory())
     net.Send(pPly)
 end)
+
+hook.Add("EntityTakeDamage", "AVInv:DurabilityOnHeadgears", function(pTarget, tDmgInfo)
+    if !IsValid(pTarget) || !pTarget:IsPlayer() then return end
+
+    local eHeadEntity = pTarget:getEquippedHeadEntity()
+    if !IsValid(eHeadEntity) then return end
+
+    Arkonfig.Inventory:damageItem(eHeadEntity, pTarget)
+end)

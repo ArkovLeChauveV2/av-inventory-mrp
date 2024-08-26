@@ -27,6 +27,7 @@ if SERVER then
     include("av-inv-mrp/classes/item.lua")
     include("av-inv-mrp/loaders/sh_items-loader.lua")
 
+    include("av-inv-mrp/server/sv_sql.lua")
     include("av-inv-mrp/server/sv_data.lua")
     include("av-inv-mrp/server/sv_head-equipment.lua")
     include("av-inv-mrp/server/sv_meta.lua")

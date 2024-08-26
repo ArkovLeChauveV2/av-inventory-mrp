@@ -16,7 +16,7 @@
 function net.WriteItemData(tItem)
     net.WriteUInt(tItem.id, 16)
     net.WriteUInt(tItem.amount, 16)
-    net.WriteUInt(tItem.durability, 16)
+    net.WriteInt(tItem.durability, 16)
 end
 
 /*
@@ -30,7 +30,7 @@ function net.ReadItemData()
     local tItem = {}
     tItem.id = net.ReadUInt(16)
     tItem.amount = net.ReadUInt(16)
-    tItem.durability = net.ReadUInt(16)
+    tItem.durability = net.ReadInt(16)
 
     return tItem
 end
