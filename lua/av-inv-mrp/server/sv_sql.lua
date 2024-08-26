@@ -90,7 +90,7 @@ end
 
     @param String sQuery - The SQL query to execute.
     @param varargs Fields - The fields to integrate into the query.
-    @param function(tData) callback - (Optional) The callback function to execute after the request.
+    @param function(tData) callback - (optional) The callback function to execute after the request.
 */
 function Arkonfig.Inventory:Query(sQuery, ...)
     local fCallback

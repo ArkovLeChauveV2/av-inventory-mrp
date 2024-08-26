@@ -55,3 +55,8 @@ Player:damageItem(nSlot, nDamage)
 ```
 Be careful, if there is more than one item on the given slot, the damaged item will change slot.
 If there is not enough space in the inventory, the item will get back on the ground.
+
+## Compatibility with other addons
+If you wanna create an entity that should store values (e.g. If you wanna create an inventory item for the meth from Zero's Methlab, you should store his weight and his purity percent).
+
+By default, the compatibility with zero's drug lab 1 is provided.

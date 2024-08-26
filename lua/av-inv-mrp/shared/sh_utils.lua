@@ -3,6 +3,7 @@
         id: Number - the identifier of the possessed item
         amount: Number - the amount of the possessed item
         durability: Number - the durability of the possessed item (-1 if no durability)
+        savedData: JSON - We don't network it, we only need it on the serverside
     }
 */
 

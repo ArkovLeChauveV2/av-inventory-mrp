@@ -3,6 +3,8 @@
 Arkonfig.Inventory.Classes.Item = {}
 Arkonfig.Inventory.Classes.Item.__index = {}
 
+
+Arkonfig.Inventory.Classes.Item.__index.id = -1
 // The item name will appear in the inventory
 Arkonfig.Inventory.Classes.Item.__index.name = "Test Item"
 // The ent class of the item (used on the item spawn)
@@ -34,5 +36,6 @@ Arkonfig.Inventory.Classes.Item.__index.onSpawn = function(eEnt, tData)
 end
 
 // Callback when the item will be saved into the inventory (you should store the entities data here)
+// You should return the data to store 
 Arkonfig.Inventory.Classes.Item.__index.doSave = function(eEnt)
 end

@@ -3,6 +3,7 @@
         id: Number - the identifier of the possessed item
         amount: Number - the amount of the possessed item
         durability: Number - the durability of the possessed item (-1 if no durability)
+        savedData: JSON - We don't network it, we only need it on the serverside
     }
 */
 
@@ -49,6 +50,7 @@ function Player:removeToSlot(nSlot, nAmount)
     if self:getInventory()[nSlot] <= 0 || nNewAmount < 0 then return false end
 
     self:getInventory()[nSlot].amount = nNewAmount == 0 && nil || nNewAmount
+    self:getInventory()[nSlot].savedData[#self:getInventory()[nSlot].savedData] = nil
 
     return true
 end
@@ -90,11 +92,12 @@ end
     @param Number nId - The identifier of the item.
     @param Number nAmount - The amount of that item to add in the inventory.
     @param Number nDurability - The durability of the item (-1 if no durability).
-    @param Boolean bShouldNotif - Should a notif be sent ?
+    @param List tSavedData - (optional) The list of saved datas
+    @param Boolean bShouldNotif - (optional) Should a notif be sent ?
 
     @return Number - The remaining amount that cannot be stored
 */
-function Player:addToInventory(nId, nAmount, nDurability, bShouldNotif)
+function Player:addToInventory(nId, nAmount, nDurability, tSavedData, bShouldNotif)
     bShouldNotif = bShouldNotif == nil && true || bShouldNotif
 
     local tItem = Arkonfig.Inventory:getItemById(nId)
@@ -110,7 +113,10 @@ function Player:addToInventory(nId, nAmount, nDurability, bShouldNotif)
         
         local nActualAmount = self:getInventory()[nSlot].amount
         local nNewAmount = math.min(nActualAmount + nAmount, tItem.MaxItemStack)
+
         self.tInv[nSlot] = {id = nId, amount = nNewAmount, durability = nDurability}
+        self.tInv[nSlot].savedData = self.tInv[nSlot].savedData || {}
+        self.tInv[nSlot].savedData[#self.tInv[nSlot].savedData + 1] = tSavedData
 
         // Time to find another slot for the remaining items to store
         nAmount = nAmount - nNewAmount
@@ -127,10 +133,11 @@ end
     @param Entity eEnt - The entity to pickup.
 */
 function Player:pickupItem(eEnt)
-    local nId = Arkonfig.Inventory:getItemIdByClass(eEnt:GetClass())
-    if !nId then return end
+    local tItem = Arkonfig.Inventory:getItemByClass(eEnt:GetClass())
+    if !tItem then return end
 
-    self:addToInventory(nId, 1, eEnt.nDurability || -1)
+    local tSavedData = tItem:doSave(eEnt)
+    self:addToInventory(tItem.id, 1, eEnt.nDurability || -1, tSavedData)
 
     eEnt:Remove()
 end
@@ -161,8 +168,10 @@ function Player:dropItem(nSlot, nAmount)
         local tr = util.TraceLine(trace)
 
         local eEnt = Arkonfig.Inventory:spawnItem(tItem, tr.HitPos, angle_zero, self, tItem.durability)
-
         DarkRP.placeEntity(eEnt, tr, ply)
+        tItem:onSpawn(eEnt, self.tInv[nSlot].savedData[#self.tInv[nSlot].savedData])
+        
+        self.tInv[nSlot].savedData[#self.tInv[nSlot].savedData] = nil
     end
 end
 
@@ -181,26 +190,9 @@ function Player:damageItem(nSlot, nDamage)
     local tItem = Arkonfig.Inventory:getItemById(tSaveItem.id)
     if !tItem then continue end
 
-    self:removeToSlot(nSlot, 1)
-
     tSaveItem.durability = tSaveItem.durability - nDamage
-
-    if tSaveItem.durability <= 0 then
-        DarkRP.notify(self, NOTIFY_GENERIC, 3, Arkonfig.Inventory:getLang("itemBroke", tItem.name))
-        return
-    end
-
-    local nRemainingItems = self:addToInventory(tSaveItem.id, 1, tSaveItem.durability, false)
-    if nRemainingItems == 0 then return end
-
-    DarkRP.notify(self, NOTIFY_GENERIC, 3, Arkonfig.Inventory:getLang("notEnoughSpace"))
-
-    local trace = {}
-    trace.start = self:EyePos()
-    trace.endpos = trace.start + self:GetAimVector() * 85
-    trace.filter = self
-
-    local tr = util.TraceLine(trace)
-    local eEnt = Arkonfig.Inventory:spawnItem(tItem, tr.HitPos, angle_zero, self, tSaveItem.durability)
-    DarkRP.placeEntity(eEnt, tr, self)
+    if tSaveItem.durability > 0 then return end
+    
+    DarkRP.notify(self, NOTIFY_GENERIC, 3, Arkonfig.Inventory:getLang("itemBroke", tItem.name))
+    self:removeToSlot(nSlot, 1)
 end

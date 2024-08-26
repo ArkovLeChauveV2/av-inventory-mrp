@@ -135,6 +135,9 @@ end
 
 hook.Add( "PostGamemodeLoaded", "AVInv:LoadItems", function()
     local tItems = loadAllItems()
+
+    Arkonfig.Inventory.Classes.Item.onEquip = nil
+    Arkonfig.Inventory.Classes.Item.onUnequip = nil
     
     for _, v in ipairs(tItems) do    
         if SERVER then
@@ -143,8 +146,11 @@ hook.Add( "PostGamemodeLoaded", "AVInv:LoadItems", function()
     
         include(v)
 
+        local nId = #tAllItems + 1
+
         tItem = setmetatable(tItem, Arkonfig.Inventory.Classes.Item)
-        tAllItems[#tAllItems + 1] = tItem
+        tItem.id = nId
+        tAllItems[nId] = tItem
         tItem = nil
     end
 end )
