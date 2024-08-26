@@ -2,6 +2,7 @@
     itemData = {
         id: Number - the identifier of the possessed item
         amount: Number - the amount of the possessed item
+        durability: Number - the durability of the possessed item (-1 if no durability)
     }
 */
 
@@ -15,6 +16,7 @@
 function net.WriteItemData(tItem)
     net.WriteUInt(tItem.id, 16)
     net.WriteUInt(tItem.amount, 16)
+    net.WriteUInt(tItem.durability, 16)
 end
 
 /*
@@ -28,6 +30,7 @@ function net.ReadItemData()
     local tItem = {}
     tItem.id = net.ReadUInt(16)
     tItem.amount = net.ReadUInt(16)
+    tItem.durability = net.ReadUInt(16)
 
     return tItem
 end

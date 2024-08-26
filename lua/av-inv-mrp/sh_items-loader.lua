@@ -66,26 +66,26 @@ function Arkonfig.Inventory:getItemIdByClass(sClass)
 end
 
 /*
-    Arkonfig.Inventory:spawnItem(nId)
+    Arkonfig.Inventory:spawnItem(tItem, vPos, aAng, pOwner, nDurability)
 
     Spawns an item by its identifier.
 
     @param Item tItem - The item to spawn.
-
     @param Vector vPos - The position to spawn the item.
-
     @param Angle aAng - The angle to spawn the item.
-
     @param Player pOwner - The owner of the spawned item.
+    @param Number nDurability - The durability of the item
 
     @return Entity - The spawned item
 */
-function Arkonfig.Inventory:spawnItem(tItem, vPos, aAng, pOwner)
+function Arkonfig.Inventory:spawnItem(tItem, vPos, aAng, pOwner, nDurability)
     local eEnt = ents.Create(tItem.class)
     eEnt:SetModel(tItem.model)
     eEnt:SetPos(vPos)
     eEnt:SetAngles(aAng)
     eEnt:CPPISetOwner(pOwner || NULL)
+    eEnt:Spawn()
+    eEnt.nDurability = tItem.durability
 
     return eEnt
 end

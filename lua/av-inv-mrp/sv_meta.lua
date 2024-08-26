@@ -2,6 +2,7 @@
     itemData = {
         id: Number - the identifier of the possessed item
         amount: Number - the amount of the possessed item
+        durability: Number - the durability of the possessed item (-1 if no durability)
     }
 */
 
@@ -32,12 +33,11 @@ function Player:getItemBySlot(nSlot)
 end
 
 /*
-    Player:getInventory()
+    Player:removeToSlot(nSlot, nAmount)
 
-    Gets the inv of the player.
+    Remove an item by slot from the player's inventory.
 
     @param Number nSlot - The inv slot to remove
-
     @param Number nAmount - The amount to remove
 
     @return Boolean - Was the remove operation successfully done ?
@@ -79,15 +79,15 @@ function Player:getSlotForItem(nId)
 end
 
 /*
-    Player:addToInventory(nId, nAmount)
+    Player:addToInventory(nId, nAmount, nDurability)
 
     Add an item to the player's inv
 
     @param Number nId - The identifier of the item.
-
     @param Number nAmount - How much items do you wanna add ?.
+    @param Number nDurability - The durability of the item (-1 if no durability).
 */
-function Player:addToInventory(nId, nAmount)
+function Player:addToInventory(nId, nAmount, nDurability)
     local tItem = Arkonfig.Inventory:getItemById(nId)
     if !tItem then return end
 
@@ -99,7 +99,7 @@ function Player:addToInventory(nId, nAmount)
         
         local nActualAmount = self:getInventory()[nSlot].amount
         local nNewAmount = math.min(nActualAmount + nAmount, tItem.MaxItemStack)
-        self.tInv[nSlot] = {id = nId, amount = nNewAmount}
+        self.tInv[nSlot] = {id = nId, amount = nNewAmount, durability = nDurability}
     end
 end
 
@@ -114,7 +114,7 @@ function Player:pickupItem(eEnt)
     local nId = Arkonfig.Inventory:getItemIdByClass(eEnt:GetClass())
     if !nId then return end
 
-    self:addToInventory(nId, 1)
+    self:addToInventory(nId, 1, eEnt.nDurability || -1)
 
     eEnt:Remove()
 end
@@ -124,9 +124,8 @@ end
 
     Drops an item to the ground.
 
-    @param Number nSlot - The item's slot to drop from the inv
-
-    @param Number nAmount - The amount to drop
+    @param Number nSlot - The item's slot to drop from the inv.
+    @param Number nAmount - The amount to drop.
 */
 function Player:dropItem(nSlot, nAmount)
     local tItem = self:getItemBySlot(nSlot)
@@ -143,7 +142,7 @@ function Player:dropItem(nSlot, nAmount)
     
         local tr = util.TraceLine(trace)
 
-        local eEnt = Arkonfig.Inventory:spawnItem(tItem, tr.HitPos, angle_zero, self)
+        local eEnt = Arkonfig.Inventory:spawnItem(tItem, tr.HitPos, angle_zero, self, tItem.durability)
 
         DarkRP.placeEntity(eEnt, tr, ply)
     end

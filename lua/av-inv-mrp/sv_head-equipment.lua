@@ -40,6 +40,8 @@ function Player:equipHeadItem(nSlot)
     self.eHeadAcc:SetModel(tItem.model)
     self.eHeadAcc:AddEffects(EF_FOLLOWBONE)
     self.eHeadAcc:SetParent(self, self:LookupBone("ValveBiped.Bip01_Head1"))
+    self.eHeadAcc:Spawn()
+    self.eHeadAcc.durability = tItemData.durability || -1
 
     self.equippedHead = tItemData.id
 end
@@ -58,8 +60,12 @@ function Player:unequipHeadItem()
 
     if tItem.onEquip then tItem.onUnequip(self) end
 
-    self:destroyHeadItem()
-    self:addToInventory(nEquippedHeadId, 1)
+    local nDurability = IsValid(self.eHeadAcc) && self.eHeadAcc.durability || -1
+
+    local bDestroySucceed = self:destroyHeadItem()
+    if !bDestroySucceed then return end
+
+    self:addToInventory(nEquippedHeadId, 1, nDurability)
 end
 
 /*
