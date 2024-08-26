@@ -19,6 +19,9 @@ if SERVER then
     AddCSLuaFile("av-inv-mrp/classes/item.lua")
     AddCSLuaFile("av-inv-mrp/loaders/sh_items-loader.lua")
 
+    AddCSLuaFile("av-inv-mrp/client/cl_networking.lua")
+    AddCSLuaFile("av-inv-mrp/client/cl_draw.lua")
+
     include("av-inv-mrp/shared/sh_config.lua")
     include("av-inv-mrp/loaders/sh_language-loader.lua")
 
@@ -42,4 +45,7 @@ else
     include("av-inv-mrp/enums/categories.lua")
     include("av-inv-mrp/classes/item.lua")
     include("av-inv-mrp/loaders/sh_items-loader.lua")
+
+    include("av-inv-mrp/client/cl_networking.lua")
+    include("av-inv-mrp/client/cl_draw.lua")
 end

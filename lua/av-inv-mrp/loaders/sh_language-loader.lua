@@ -1,10 +1,7 @@
 local sSelectedLanguage = Arkonfig.Inventory.SelectedLanguage
 local color_green = Color(0, 255, 0)
 
-MsgC(color_green, "======================================\n")
-MsgC(color_green, "====     AV Inventory MangaRP     ====\n")
-MsgC(color_green, "====    Loading " .. sSelectedLanguage .. " translation    ====\n")
-MsgC(color_green, "======================================\n")
+MsgC(color_green, "[av-inv-mrp] Loading " .. sSelectedLanguage .. " translation\n")
 
 if SERVER then
     AddCSLuaFile("av-inv-mrp/languages/" .. sSelectedLanguage .. ".lua")

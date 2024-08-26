@@ -188,7 +188,7 @@ function Player:damageItem(nSlot, nDamage)
     if !tSaveItem then return end
 
     local tItem = Arkonfig.Inventory:getItemById(tSaveItem.id)
-    if !tItem then continue end
+    if !tItem then return end
 
     tSaveItem.durability = tSaveItem.durability - nDamage
     if tSaveItem.durability > 0 then return end
