@@ -27,3 +27,8 @@ Arkonfig.Inventory.UseMySQLoo = true
 [av-inv-mrp] The addon will use sqlite until you'll fix that.
 ```
 - Goto data/mangarp/av-inv-mrp-credentials.json and fill your credentials
+
+## Create an item
+To create an item, go into lua/av-inv-mrp/items, and you can either create your lua file here, or into a folder if you wanna correctly organize your items.
+
+To see all the variables you can put into an item, go to lua/av-inv-mrp/classes/item.lua (the file is documented).
