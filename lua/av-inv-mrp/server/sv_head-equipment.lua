@@ -44,6 +44,8 @@ function Player:equipHeadItem(nSlot)
     self.eHeadAcc.durability = tItemData.durability || -1
 
     self.equippedHead = tItemData.id
+
+    DarkRP.notify(self, NOTIFY_GENERIC, 3, Arkonfig.Inventory:getLang("itemEquipped", tItem.name))
 end
 
 /*
@@ -65,7 +67,10 @@ function Player:unequipHeadItem()
     local bDestroySucceed = self:destroyHeadItem()
     if !bDestroySucceed then return end
 
-    self:addToInventory(nEquippedHeadId, 1, nDurability)
+    local nRemainingItems = self:addToInventory(nEquippedHeadId, 1, nDurability)
+    if nRemainingItems == 0 then return end
+
+    DarkRP.notify(self, NOTIFY_GENERIC, 3, Arkonfig.Inventory:getLang("notEnoughSpace"))
 end
 
 /*
@@ -84,6 +89,8 @@ function Player:destroyHeadItem()
 
     SafeRemoveEntity(self.eHeadAcc)
     self.equippedHead = nil
+    
+    DarkRP.notify(self, NOTIFY_GENERIC, 3, Arkonfig.Inventory:getLang("itemBroke", tItem.name))
 
     return true
 end

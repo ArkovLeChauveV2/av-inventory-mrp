@@ -10,3 +10,6 @@ Arkonfig.Inventory.PickupItem = KEY_M
 
 // Max size for a player's inventory
 Arkonfig.Inventory.MaxInventorySize = 25
+
+// Default language = "fr"
+Arkonfig.Inventory.SelectedLanguage = "fr"

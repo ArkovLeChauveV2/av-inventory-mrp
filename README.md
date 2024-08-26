@@ -32,3 +32,10 @@ Arkonfig.Inventory.UseMySQLoo = true
 To create an item, go into lua/av-inv-mrp/items, and you can either create your lua file here, or into a folder if you wanna correctly organize your items.
 
 To see all the variables you can put into an item, go to lua/av-inv-mrp/classes/item.lua (the file is documented).
+
+## Create a new language
+Goto lua/av-inv-mrp/languages, copy/paste an existing language file (e.g. en.lua) and change en to your country code.
+When your language is ready, update the config
+```lua
+Arkonfig.Inventory.SelectedLanguage = "put your country code here"
+```

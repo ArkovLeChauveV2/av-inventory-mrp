@@ -10,30 +10,35 @@ if SERVER then
 
     resource.AddFile("materials/av-inv-mrp/key_empty.png")
 
-    AddCSLuaFile("av-inv-mrp/sh_config.lua")
-    AddCSLuaFile("av-inv-mrp/sh_utils.lua")
+    AddCSLuaFile("av-inv-mrp/shared/sh_config.lua")
+    AddCSLuaFile("av-inv-mrp/loaders/sh_language-loader.lua")
+    AddCSLuaFile("av-inv-mrp/shared/sh_utils.lua")
 
     Arkonfig.Inventory.Classes = {}
     AddCSLuaFile("av-inv-mrp/enums/categories.lua")
     AddCSLuaFile("av-inv-mrp/classes/item.lua")
-    AddCSLuaFile("av-inv-mrp/sh_items-loader.lua")
+    AddCSLuaFile("av-inv-mrp/loaders/sh_items-loader.lua")
 
-    include("av-inv-mrp/sh_config.lua")
-    include("av-inv-mrp/sh_utils.lua")
+    include("av-inv-mrp/shared/sh_config.lua")
+    include("av-inv-mrp/loaders/sh_language-loader.lua")
+
+    include("av-inv-mrp/shared/sh_utils.lua")
     include("av-inv-mrp/enums/categories.lua")
     include("av-inv-mrp/classes/item.lua")
-    include("av-inv-mrp/sh_items-loader.lua")
+    include("av-inv-mrp/loaders/sh_items-loader.lua")
 
-    include("av-inv-mrp/sv_data.lua")
-    include("av-inv-mrp/sv_head-equipment.lua")
-    include("av-inv-mrp/sv_meta.lua")
-    include("av-inv-mrp/sv_hooks.lua")
+    include("av-inv-mrp/server/sv_data.lua")
+    include("av-inv-mrp/server/sv_head-equipment.lua")
+    include("av-inv-mrp/server/sv_meta.lua")
+    include("av-inv-mrp/server/sv_hooks.lua")
+    include("av-inv-mrp/server/sv_networking.lua")
 else
-    include("av-inv-mrp/sh_config.lua")
-    include("av-inv-mrp/sh_utils.lua")
+    include("av-inv-mrp/shared/sh_config.lua")
+    include("av-inv-mrp/loaders/sh_language-loader.lua")
+    include("av-inv-mrp/shared/sh_utils.lua")
     
     Arkonfig.Inventory.Classes = {}
     include("av-inv-mrp/enums/categories.lua")
     include("av-inv-mrp/classes/item.lua")
-    include("av-inv-mrp/sh_items-loader.lua")
+    include("av-inv-mrp/loaders/sh_items-loader.lua")
 end

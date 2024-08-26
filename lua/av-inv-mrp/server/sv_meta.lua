@@ -52,16 +52,17 @@ function Player:removeToSlot(nSlot, nAmount)
 end
 
 /*
-    Player:getSlotForItem(nId)
+    Player:getSlotForItem(nId, nDurability)
 
     Get the better slot for an item into the inventory.
 
     @param Number nId - The identifier of the item.
+    @param Number nDurability - The durability of the item.
 
     @return Number - An available slot in the inventory.
     nil if no slot available
 */
-function Player:getSlotForItem(nId)
+function Player:getSlotForItem(nId, nDurability)
     for i = 1, Arkonfig.Inventory.MaxInventorySize do
         local tItemData = self:getItemBySlot(i)
         if !tItemData then return i end
@@ -71,6 +72,7 @@ function Player:getSlotForItem(nId)
 
         if tItemData.id != nId then continue end
         if tItemData.amount >= tItemConfig.MaxItemStack then continue end
+        if tItemData.durability != nDurability then continue end
 
         return i
     end
@@ -86,21 +88,30 @@ end
     @param Number nId - The identifier of the item.
     @param Number nAmount - How much items do you wanna add ?.
     @param Number nDurability - The durability of the item (-1 if no durability).
+
+    @return Number - The remaining amount that cannot be stored
 */
 function Player:addToInventory(nId, nAmount, nDurability)
     local tItem = Arkonfig.Inventory:getItemById(nId)
-    if !tItem then return end
+    if !tItem then return nAmount end
 
     local bAllItemsStocked = false
+    
+    DarkRP.notify(self, NOTIFY_GENERIC, 3, Arkonfig.Inventory:getLang("gettingItem", tItem.name, nAmount))
 
     while !bAllItemsStocked do
-        local nSlot = self:getSlotForItem(nId)
-        if !nSlot then bAllItemsStocked = true return end
+        local nSlot = self:getSlotForItem(nId, nDurability)
+        if !nSlot then bAllItemsStocked = true return nAmount end
         
         local nActualAmount = self:getInventory()[nSlot].amount
         local nNewAmount = math.min(nActualAmount + nAmount, tItem.MaxItemStack)
         self.tInv[nSlot] = {id = nId, amount = nNewAmount, durability = nDurability}
+
+        // Time to find another slot for the remaining items to store
+        nAmount = nAmount - nNewAmount
     end
+
+    return nAmount
 end
 
 /*
@@ -133,6 +144,8 @@ function Player:dropItem(nSlot, nAmount)
 
     local bSucceed = self:removeToSlot(nSlot, nAmount)
     if !bSucceed then return end
+    
+    DarkRP.notify(self, NOTIFY_GENERIC, 3, Arkonfig.Inventory:getLang("droppingItem", tItem.name, nAmount))
 
     for i = 1, nAmount do
         local trace = {}
