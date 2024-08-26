@@ -46,26 +46,48 @@ function Arkonfig.Inventory:getItemByClass(sClass)
 end
 
 /*
+    Arkonfig.Inventory:getItemIdByClass(sClass)
+
+    Get an item id by its entity class.
+
+    @param String sClass - The class of the item.
+
+    @return Number - The id of the item that uses that class.
+    nil if not found
+*/
+function Arkonfig.Inventory:getItemIdByClass(sClass)
+    for nId, v in ipairs(tAllItems) do
+        if v.class == sClass then
+            return nId
+        end
+    end
+
+    return nil
+end
+
+/*
     Arkonfig.Inventory:spawnItem(nId)
 
     Spawns an item by its identifier.
 
-    @param Number nId - The identifier of the item.
+    @param Item tItem - The item to spawn.
 
     @param Vector vPos - The position to spawn the item.
 
     @param Angle aAng - The angle to spawn the item.
 
     @param Player pOwner - The owner of the spawned item.
-*/
-function Arkonfig.Inventory:spawnItem(nId, vPos, aAng, pOwner)
-    local tItem = self:getItemById(nId)
 
+    @return Entity eEnt - The spawned item
+*/
+function Arkonfig.Inventory:spawnItem(tItem, vPos, aAng, pOwner)
     local eEnt = ents.Create(tItem.class)
     eEnt:SetModel(tItem.model)
     eEnt:SetPos(vPos)
     eEnt:SetAngles(aAng)
     eEnt:CPPISetOwner(pOwner || NULL)
+
+    return eEnt
 end
 
 local function loadAllItems()
