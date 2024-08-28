@@ -17,7 +17,7 @@ function PANEL:Init()
     self.pClose:SetSize(self:GetWide() / 38.4, self:GetTall() / 21.6)
     self.pClose:SetPos(self:GetWide() - self.pClose:GetWide(), 0)
     self.pClose:SetTextColor(color_white)
-    self.pClose:SetFont("Trebuchet24")
+    self.pClose:SetFont("AVInv:Font1")
     self.pClose:SetText("X")
     self.pClose.Paint = function() end
 
@@ -46,7 +46,7 @@ function PANEL:Paint(w, h)
     surface.SetMaterial(mGradientDown)
     surface.DrawTexturedRect(0, 0, w, h / 2)
 
-    draw.SimpleText(Arkonfig.Inventory:getLang("inventory"), "Trebuchet24", w / 2, h / 100, color_white, 1)
+    draw.SimpleText(Arkonfig.Inventory:getLang("inventory"), "AVInv:Font1", w / 2, h / 75, color_white, 1)
 end
 
 vgui.Register("AVInv:Main", PANEL, "DFrame")

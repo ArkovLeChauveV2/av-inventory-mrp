@@ -133,24 +133,24 @@ local function loadAllItems()
     return tItemsList
 end
 
-hook.Add( "PostGamemodeLoaded", "AVInv:LoadItems", function()
-    local tItems = loadAllItems()
+// Load all items from items folder
 
-    Arkonfig.Inventory.Classes.Item.onEquip = nil
-    Arkonfig.Inventory.Classes.Item.onUnequip = nil
-    
-    for _, v in ipairs(tItems) do    
-        if SERVER then
-            AddCSLuaFile(v)
-        end
-    
-        include(v)
+local tItems = loadAllItems()
 
-        local nId = #tAllItems + 1
+Arkonfig.Inventory.Classes.Item.onEquip = nil
+Arkonfig.Inventory.Classes.Item.onUnequip = nil
 
-        tItem = setmetatable(tItem, Arkonfig.Inventory.Classes.Item)
-        tItem.id = nId
-        tAllItems[nId] = tItem
-        tItem = nil
+for _, v in ipairs(tItems) do    
+    if SERVER then
+        AddCSLuaFile(v)
     end
-end )
+
+    include(v)
+
+    local nId = #tAllItems + 1
+
+    tItem = setmetatable(tItem, Arkonfig.Inventory.Classes.Item)
+    tItem.id = nId
+    tAllItems[nId] = tItem
+    tItem = nil
+end
