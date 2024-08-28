@@ -49,7 +49,7 @@ function net.WriteItemsData(tItemsList)
     net.WriteUInt(nItemsCount, 16)
     
     for idx, tItem in pairs(tItemsList) do
-        net.WriteItem(tItem)
+        net.WriteItemData(tItem)
     end
 end
 
@@ -65,7 +65,7 @@ function net.ReadItemsData()
     local nItemsCount = net.ReadUInt(16)
 
     for i = 1, nItemsCount do
-        tItemsList[#tItemsList + 1] = net.ReadItem()
+        tItemsList[#tItemsList + 1] = net.ReadItemData()
     end
 
     return tItemsList

@@ -1,10 +1,32 @@
-net.Receive("AVInv:OpenInv", function()
-    local tItemsList = net.ReadItemsData()
+Arkonfig.Inventory.LocalPlayerInv = {}
 
-    /*local pInventory = vgui.Create("AVInt:Main")
-    pInventory:SetSize(ScrW(), ScrH())
-    pInventory:Center()
-    pInventory:SetInventory(tItemsList)*/
+net.Receive("AVInv:SyncInv", function()
+    local bIsSendingAll = net.ReadBool()
+
+    if bIsSendingAll then
+        Arkonfig.Inventory.LocalPlayerInv = net.ReadItemsData()
+        return 
+    end
+
+    local bIsRemove = net.ReadBool()
+
+    if bIsRemove then
+        local nSlot = net.ReadUInt(16)
+        local nAmount = net.ReadUInt(16)
+
+        Arkonfig.Inventory.LocalPlayerInv[nSlot] = Arkonfig.Inventory.LocalPlayerInv[nSlot] || {amount = 0}
+
+        local nNewAmount = Arkonfig.Inventory.LocalPlayerInv[nSlot].amount - nAmount
+
+        Arkonfig.Inventory.LocalPlayerInv[nSlot] = nNewAmount > 0 && nNewAmount || nil
+
+        return
+    end
+
+    local nSlot = net.ReadUInt(16)
+    local tItem = net.ReadItemData()
+
+    Arkonfig.Inventory.LocalPlayerInv[nSlot] = tItem
 end)
 
 /*
