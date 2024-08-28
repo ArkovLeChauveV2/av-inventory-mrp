@@ -105,7 +105,7 @@ function Arkonfig.Inventory:Query(sQuery, ...)
 
     // String escaping all the arguments to prevent SQL injections
     for k, v in ipairs(tArgs) do
-        tArgs[k] = escape(v)
+        tArgs[k] = secureStr(v)
     end
 
     // Putting arguments into the query
@@ -116,7 +116,7 @@ function Arkonfig.Inventory:Query(sQuery, ...)
 
     if Arkonfig.Inventory.UseMySQLoo then
         function tQuery.onError(_, qr)
-            MsgC(color_red, "[av-inv-mrp] An error has occured !", query, qr, "\n")
+            MsgC(color_red, "[av-inv-mrp] An error has occured !\n", sQuery, qr, "\n")
         end
 
         function tQuery.onSuccess(_, data)

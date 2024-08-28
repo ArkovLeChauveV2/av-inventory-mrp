@@ -1,6 +1,3 @@
-/*hook.Add("DatabaseInitialized", "AVInv:InitTables", function()
-end)*/
-
 hook.Add("PlayerButtonDown", "AVInv:PickupItem", function(pPly, nKey)
     if nKey != Arkonfig.Inventory.PickupItem then return end
 
@@ -10,19 +7,6 @@ hook.Add("PlayerButtonDown", "AVInv:PickupItem", function(pPly, nKey)
     pPly:pickupItem(eEnt)
 end)
 
-hook.Add("PlayerButtonDown", "AVInv:OpenInv", function(pPly, nKey)
-    if nKey != Arkonfig.Inventory.OpenInv then return end
-
-    pPly.nOpenInvCdown = pPly.nOpenInvCdown || 0
-    if pPly.nOpenInvCdown <= CurTime() then return end
-
-    pPly.nOpenInvCdown = CurTime() + 1
-
-    net.Start("AVInv:OpenInv")
-        net.WriteItemsData(pPly:getInventory())
-    net.Send(pPly)
-end)
-
 hook.Add("EntityTakeDamage", "AVInv:DurabilityOnHeadgears", function(pTarget, tDmgInfo)
     if !IsValid(pTarget) || !pTarget:IsPlayer() then return end
 
@@ -30,4 +14,15 @@ hook.Add("EntityTakeDamage", "AVInv:DurabilityOnHeadgears", function(pTarget, tD
     if !IsValid(eHeadEntity) then return end
 
     Arkonfig.Inventory:damageItem(eHeadEntity, pTarget)
+end)
+
+hook.Add("PlayerInitialSpawn", "AVInv:SyncInv", function(pPly)
+    Arkonfig.Inventory:getInventory(pPly:SteamID64(), function(tData)
+        pPly.tInv = tData
+
+        net.Start("AVInv:SyncInv")
+            net.WriteBool(true)
+            net.WriteItemsData(pPly.tInv)
+        net.Send(pPly)
+    end)
 end)

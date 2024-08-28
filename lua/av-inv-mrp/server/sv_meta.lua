@@ -17,7 +17,6 @@ local Player = FindMetaTable("Player")
     @return List<itemData> - The player's inventory.
 */
 function Player:getInventory()
-    self.tInv = self.tInv || {}
     return self.tInv
 end
 
@@ -51,6 +50,8 @@ function Player:removeToSlot(nSlot, nAmount)
 
     self:getInventory()[nSlot].amount = nNewAmount == 0 && nil || nNewAmount
     self:getInventory()[nSlot].savedData[#self:getInventory()[nSlot].savedData] = nil
+    Arkonfig.Inventory:SyncRemoveInv(self, nSlot, nAmount)
+    Arkonfig.Inventory:removeItemFromDB(nSlot, self:SteamID64(), nAmount)
 
     return true
 end
@@ -62,11 +63,12 @@ end
 
     @param Number nId - The identifier of the item.
     @param Number nDurability - The durability of the item.
+    @param List tSavedData - (optional) The list of saved datas
 
     @return Number - An available slot in the inventory.
     nil if no slot available
 */
-function Player:getSlotForItem(nId, nDurability)
+function Player:getSlotForItem(nId, nDurability, tSavedData)
     for i = 1, Arkonfig.Inventory.MaxInventorySize do
         local tItemData = self:getItemBySlot(i)
         if !tItemData then return i end
@@ -77,6 +79,7 @@ function Player:getSlotForItem(nId, nDurability)
         if tItemData.id != nId then continue end
         if tItemData.amount >= tItemConfig.MaxItemStack then continue end
         if tItemData.durability != nDurability then continue end
+        if tItemData.savedData != tSavedData then continue end
 
         return i
     end
@@ -108,15 +111,16 @@ function Player:addToInventory(nId, nAmount, nDurability, tSavedData, bShouldNot
     if bShouldNotif then DarkRP.notify(self, NOTIFY_GENERIC, 3, Arkonfig.Inventory:getLang("gettingItem", tItem.name, nAmount)) end
 
     while !bAllItemsStocked do
-        local nSlot = self:getSlotForItem(nId, nDurability)
+        local nSlot = self:getSlotForItem(nId, nDurability, tSavedData)
         if !nSlot then bAllItemsStocked = true return nAmount end
         
         local nActualAmount = self:getInventory()[nSlot].amount
         local nNewAmount = math.min(nActualAmount + nAmount, tItem.MaxItemStack)
+        local tNewItem = {id = nId, amount = nNewAmount, durability = nDurability, savedData = tSavedData}
 
-        self.tInv[nSlot] = {id = nId, amount = nNewAmount, durability = nDurability}
-        self.tInv[nSlot].savedData = self.tInv[nSlot].savedData || {}
-        self.tInv[nSlot].savedData[#self.tInv[nSlot].savedData + 1] = tSavedData
+        self.tInv[nSlot] = tNewItem
+        Arkonfig.Inventory:SyncAddInv(pPly, nSlot, tNewItem)
+        Arkonfig.Inventory:storeItem(nSlot, self:SteamID64(), tNewItem)
 
         // Time to find another slot for the remaining items to store
         nAmount = nAmount - nNewAmount
@@ -169,9 +173,7 @@ function Player:dropItem(nSlot, nAmount)
 
         local eEnt = Arkonfig.Inventory:spawnItem(tItem, tr.HitPos, angle_zero, self, tItem.durability)
         DarkRP.placeEntity(eEnt, tr, ply)
-        tItem:onSpawn(eEnt, self.tInv[nSlot].savedData[#self.tInv[nSlot].savedData])
-        
-        self.tInv[nSlot].savedData[#self.tInv[nSlot].savedData] = nil
+        tItem:onSpawn(eEnt, self.tInv[nSlot].savedData)
     end
 end
 
